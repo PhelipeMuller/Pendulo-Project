@@ -1,34 +1,49 @@
+from scipy.integrate import odeint
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from scipy.integrate import odeint
 
-m = 3 #Massa do Pendulo(Kg)
-l = 2 #Tamano do barbante(m)
-g = 9.8 # Aceleração da Gravidade
+
+t=np.arange(0,15,0.01)
 
 
 
-x0 = 0
-vx0 = 0
-y0 = 0
-vy0 = 0
-Y0 = [x0,vx0,y0,vy0]
+r=5
+m=5
+g=9.8
 
-def SistemaEqs(Y, t):
-	x = Y[0]
-	vx = Y[1]
-	y = Y[2]
-	vy = Y[3]
-	
-	dxdt = vx
-	dvxdt = (m*g-(m*g*math.cos(Theta)-m*w**2*l)*math.sin(Theta)/m)
-	dydt = vy
-	dvydt = ((m*g*Math.cos(Theta)-m*w**2*l)*math.sin(Theta)/m)
+Y=[math.pi/3,0]
 
-	return [dxdt,dvxdt,dydt,dvydt]
 
-sol = odeint(SistemaEqs,Y0, T)
 
-plt.plot(sol[:,0],sol[:,2])
+def eq(Y,t):
+	teta=Y[0]
+	w=Y[1]
+
+	dtetadt=w
+	dwdt=-g*math.sin(math.radians(teta))/r
+
+	return dtetadt,dwdt
+
+
+
+sol=odeint(eq,Y,t)
+listax=[]
+listay=[]
+listaT=[]
+for teta in sol[:,0]:
+	for w in sol[:,1]:
+		T=m*g*math.cos(math.radians(teta))+m*w*w*r
+	listaT.append(T)
+
+	x=math.sin(teta)*r
+	y=-math.cos(teta)*r
+	listax.append(x)
+	listay.append(y)
+
+
+
+
+plt.plot(listax,listay)
+plt.axis("equal")
 plt.show()
